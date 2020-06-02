@@ -8,29 +8,99 @@
 #
 
 library(shiny)
-library(ggplot2)
+library(shinydashboard)
+library(dplyr)
+library(purrr)
+
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+server <- function(input, output, session) {
+  output$sidebarmenu <- shinydashboard::renderMenu({
+    sidebarMenu(
+      id = "sidebarmenu",
+      menuItem("Landing page", tabName = "landing", icon = icon("cog")),
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+      menuItem("Historical data", tabName = "historical", icon = icon("calendar")),
+      menuItem("Prior data", tabName = "data", icon = icon("table"))
+    )
+  })
+  
+  observeEvent(input$confirm, {
+    output$sidebarmenu <- shinydashboard::renderMenu({
+      sidebarMenu(
+        id = "sidebarmenu",
+        menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+        menuItem("Historical data", tabName = "historical", icon = icon("calendar")),
+        menuItem("Prior data", tabName = "data", icon = icon("table"))
+      )
+    })
+    updateTabsetPanel(session, "sidebarmenu", "data")
+    updateTabsetPanel(session, "sidebarmenu", "historical")
+    updateTabsetPanel(session, "sidebarmenu", "dashboard")
+  })
+  output$notificationsMenu <- renderMenu({
+    dropdownMenu(
+      type = "notifications",
+      notificationItem(
+        text = "12 items delivered",
+        icon("truck"),
+        status = "success"
+      )
+    )
+  })
   output$PosteriorPred <- renderPlot({
-    alpha <- ((1 - input$mean_prior) * input$mean_prior^2 - input$mean_prior * input$var_prior) / input$var_prior
-    beta <- (1 - input$mean_prior) * ((1 - input$mean_prior) * input$mean_prior - input$var_prior) / input$var_prior
+    if(is.null(filedata())) {
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var/20)^2)
+    } else {
+      df <- filedata()
+    }
+    mean_prior = df %>% select(mean_prior) %>% flatten_dbl()
+    var_prior = df %>% select(var_prior) %>% flatten_dbl()
+    alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
+    beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
     alpha.post <- input$y + alpha
     beta.post <- input$n - input$y + beta
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
     tN <- table(pred) / 10000
     r <- data.frame(tN)
     p <- ggplot(data = r, aes(x = pred, y = Freq)) +
-      geom_bar(stat = "identity") +
+      geom_bar(stat = "identity", fill = "darkblue") +
+      labs(title = "Posterior distribution", x = "No of componenets", y = "Probability") +
       theme_classic()
     p
   })
-
+  
   output$text1 <- renderText({
-    alpha <- ((1 - input$mean_prior) * input$mean_prior^2 - input$mean_prior * input$var_prior) / input$var_prior
-    beta <- (1 - input$mean_prior) * ((1 - input$mean_prior) * input$mean_prior - input$var_prior) / input$var_prior
+    if(is.null(filedata())) {
+      df <- tibble(mean_prior = input$mean / 20, var_prior = 0.2)
+    } else {
+      df <- filedata()
+    }
+    mean_prior = df %>% select(mean_prior) %>% flatten_dbl()
+    var_prior = df %>% select(var_prior) %>% flatten_dbl()
+    alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
+    beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
     alpha.post <- input$y + alpha
     beta.post <- input$n - input$y + beta
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
-    paste("probability of needing more than ", input$n_stock, "is:", sum(pred > input$n_stock) / 10000)
+    paste("Probability of needing more than ", input$n_stock, "is:", round(sum(pred > input$n_stock) / 100, 2), "%")
   })
-})
+  
+  output$required_componenets <- renderText({
+    paste("Minimal required number of components is:", components())
+  })
+  
+  components <- reactive({
+    input$mean
+  })
+  
+  filedata <- reactive({
+    infile <- input$file1
+    if (is.null(infile)){
+      return(NULL)      
+    }
+    df <- read.csv(infile$datapath)
+    df %>% filter(Group == input$group) %>% group_by(Group) %>% summarise(mean_prior = mean(Mean)/20, var_prior = mean(Std)^2)
+  })
+  
+  
+}
