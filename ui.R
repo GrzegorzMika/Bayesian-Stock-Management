@@ -1,12 +1,3 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
@@ -72,7 +63,7 @@ body <- dashboardBody(
           width = 8,
           box(
             title = tags$p("Requirements:", style = "font-size: 42px; font-family: Times New Roman; font-style: italic;"), solidHeader = TRUE, collapsible = FALSE,
-            width = NULL, collapsed = FALSE, background = "black",
+            width = NULL, collapsed = FALSE, background = "maroon",
             textOutput("required_componenets")
           ),
           box(
@@ -99,10 +90,10 @@ body <- dashboardBody(
         ),
         column(
           width = 5,
-          box(title = tags$p("Prior information from survey", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
-              width = NULL, collapsed = FALSE, background = "light-blue",
-              fileInput("file1", tags$p("Choose CSV file", style = "font-size: 32; font-family: Times New Roman"), accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")
-              )
+          box(
+            title = tags$p("Prior information from survey", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
+            width = NULL, collapsed = FALSE, background = "light-blue",
+            fileInput("file1", tags$p("Choose CSV file", style = "font-size: 32; font-family: Times New Roman"), accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv"))
           )
         )
       )

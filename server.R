@@ -1,18 +1,8 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(shinydashboard)
 library(dplyr)
 library(purrr)
 
-# Define server logic required to draw a histogram
 server <- function(input, output, session) {
   output$sidebarmenu <- shinydashboard::renderMenu({
     sidebarMenu(
@@ -23,7 +13,7 @@ server <- function(input, output, session) {
       menuItem("Prior data", tabName = "data", icon = icon("table"))
     )
   })
-  
+
   observeEvent(input$confirm, {
     output$sidebarmenu <- shinydashboard::renderMenu({
       sidebarMenu(
@@ -48,13 +38,17 @@ server <- function(input, output, session) {
     )
   })
   output$PosteriorPred <- renderPlot({
-    if(is.null(filedata())) {
-      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var/20)^2)
+    if (is.null(filedata())) {
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2)
     } else {
       df <- filedata()
     }
-    mean_prior = df %>% select(mean_prior) %>% flatten_dbl()
-    var_prior = df %>% select(var_prior) %>% flatten_dbl()
+    mean_prior <- df %>%
+      select(mean_prior) %>%
+      flatten_dbl()
+    var_prior <- df %>%
+      select(var_prior) %>%
+      flatten_dbl()
     alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
     beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
     alpha.post <- input$y + alpha
@@ -68,15 +62,19 @@ server <- function(input, output, session) {
       theme_classic()
     p
   })
-  
+
   output$text1 <- renderText({
-    if(is.null(filedata())) {
+    if (is.null(filedata())) {
       df <- tibble(mean_prior = input$mean / 20, var_prior = 0.2)
     } else {
       df <- filedata()
     }
-    mean_prior = df %>% select(mean_prior) %>% flatten_dbl()
-    var_prior = df %>% select(var_prior) %>% flatten_dbl()
+    mean_prior <- df %>%
+      select(mean_prior) %>%
+      flatten_dbl()
+    var_prior <- df %>%
+      select(var_prior) %>%
+      flatten_dbl()
     alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
     beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
     alpha.post <- input$y + alpha
@@ -84,23 +82,24 @@ server <- function(input, output, session) {
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
     paste("Probability of needing more than ", input$n_stock, "is:", round(sum(pred > input$n_stock) / 100, 2), "%")
   })
-  
+
   output$required_componenets <- renderText({
     paste("Minimal required number of components is:", components())
   })
-  
+
   components <- reactive({
     input$mean
   })
-  
+
   filedata <- reactive({
     infile <- input$file1
-    if (is.null(infile)){
-      return(NULL)      
+    if (is.null(infile)) {
+      return(NULL)
     }
     df <- read.csv(infile$datapath)
-    df %>% filter(Group == input$group) %>% group_by(Group) %>% summarise(mean_prior = mean(Mean)/20, var_prior = mean(Std)^2)
+    df %>%
+      filter(Group == input$group) %>%
+      group_by(Group) %>%
+      summarise(mean_prior = mean(Mean) / 20, var_prior = mean(Std)^2)
   })
-  
-  
 }
