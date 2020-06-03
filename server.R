@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(dplyr)
 library(purrr)
+library(ggplot2)
 
 server <- function(input, output, session) {
   output$sidebarmenu <- shinydashboard::renderMenu({
@@ -65,7 +66,7 @@ server <- function(input, output, session) {
 
   output$text1 <- renderText({
     if (is.null(filedata())) {
-      df <- tibble(mean_prior = input$mean / 20, var_prior = 0.2)
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2)
     } else {
       df <- filedata()
     }
@@ -85,7 +86,7 @@ server <- function(input, output, session) {
 
   output$required_componenets <- renderText({
     if (is.null(filedata())) {
-      df <- tibble(mean_prior = input$mean / 20, var_prior = 0.2)
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2)
     } else {
       df <- filedata()
     }
