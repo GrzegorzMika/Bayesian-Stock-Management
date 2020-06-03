@@ -84,11 +84,28 @@ server <- function(input, output, session) {
   })
 
   output$required_componenets <- renderText({
-    paste("Minimal required number of components is:", components())
-  })
-
-  components <- reactive({
-    input$mean
+    if (is.null(filedata())) {
+      df <- tibble(mean_prior = input$mean / 20, var_prior = 0.2)
+    } else {
+      df <- filedata()
+    }
+    mean_prior <- df %>%
+      select(mean_prior) %>%
+      flatten_dbl()
+    var_prior <- df %>%
+      select(var_prior) %>%
+      flatten_dbl()
+    alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
+    beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
+    alpha.post <- input$y + alpha
+    beta.post <- input$n - input$y + beta
+    pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
+    prob = rep(0, input$n_tilde)
+    for(i in 1:input$n_tilde){
+      prob[i] = 1 - sum(pred > i) / 10000
+    }
+    components <- min(which(prob >= input$conf/100))
+    paste("Minimal required number of components is:", components)
   })
 
   filedata <- reactive({
