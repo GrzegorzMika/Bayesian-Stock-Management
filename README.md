@@ -1,1 +1,1 @@
-# Bayesian-Stock-Management
+# Bayesian Stock Management for Gearbox Company
