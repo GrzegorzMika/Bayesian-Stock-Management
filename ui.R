@@ -67,8 +67,8 @@ body <- dashboardBody(
             textOutput("required_componenets")
           ),
           box(
-            title = tags$p("Summary:", style = "font-size: 42px; font-family: Times New Roman;"), solidHeader = TRUE, collapsible = FALSE,
-            width = NULL, collapsed = FALSE, background = "light-blue",
+            title = tags$p("Summary:", style = "font-size: 42px; font-family: Times New Roman;"), solidHeader = TRUE, collapsible = TRUE,
+            width = NULL, collapsed = TRUE, background = "light-blue",
             plotOutput("PosteriorPred"),
             textOutput("text1")
           )

@@ -32,7 +32,7 @@ server <- function(input, output, session) {
     dropdownMenu(
       type = "notifications",
       notificationItem(
-        text = "12 items delivered",
+        text = "10 items delivered",
         icon("truck"),
         status = "success"
       )
@@ -60,7 +60,7 @@ server <- function(input, output, session) {
     p <- ggplot(data = r, aes(x = pred, y = Freq)) +
       geom_bar(stat = "identity", fill = "darkblue") +
       labs(title = "Posterior distribution", x = "No of componenets", y = "Probability") +
-      theme_classic()
+      theme_linedraw()
     p
   })
 
