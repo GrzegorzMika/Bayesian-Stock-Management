@@ -83,9 +83,8 @@ body <- dashboardBody(
           box(
             title = tags$p("Prior information", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
             width = NULL, collapsed = FALSE, background = "light-blue",
-            numericInput("mean", tags$p("Out of 20 componenets, how much of them will be broken?", style = "font-size: 32; font-family: Times New Roman"), 3, min = 0, max = 20),
-            numericInput("var", tags$p("By how many parts will vary the number specified above? \n
-                                              (For example, out of 20 components, 3 will be broken plus/minus 1 component)", style = "font-size: 32; font-family: Times New Roman"), 1, min = 0, max = 20)
+            numericInput("mean", tags$p("Out of 20 components how many of them will be broken?", style = "font-size: 32; font-family: Times New Roman"), 3, min = 0, max = 20),
+            numericInput("var", tags$p("The above number can vary by +/- :", style = "font-size: 32; font-family: Times New Roman"), 1, min = 0, max = 20)
           )
         ),
         column(
