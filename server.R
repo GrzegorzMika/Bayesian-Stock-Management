@@ -118,6 +118,7 @@ server <- function(input, output, session) {
     df %>%
       filter(Group == input$group) %>%
       group_by(Group) %>%
-      summarise(mean_prior = mean(Mean) / 20, var_prior = mean(Std)^2)
+      mutate(Mean = Mean * Conf, Std = Std * Conf) %>% 
+      summarise(mean_prior = sum(Mean) / (20*sum(Conf)), var_prior = (sum(Std)/sum(Conf))^2)
   })
 }
