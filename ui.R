@@ -49,12 +49,7 @@ body <- dashboardBody(
         box(
           title = tags$p("Group of components", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
           width = 8, collapsed = FALSE, background = "light-blue",
-          selectInput("group", label = tags$p("Select a group of componenets", style = "font-size: 32; font-family: Times New Roman"), choices = groups),
-          # actionButton(
-          #   inputId = "confirm",
-          #   label = "Next",
-          #   icon = icon("ok-circle")
-          # )
+          selectInput("group", label = tags$p("Select a group of componenets", style = "font-size: 32; font-family: Times New Roman"), choices = groups)
         ),
         box(
           title = tags$p("Age category", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
