@@ -1,0 +1,12 @@
+name: Bayesian-Stock-Management
+title: Bayesian-Stock-Management
+username:
+account: grzegorzmika
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2427020
+bundleId: 3244031
+url: https://grzegorzmika.shinyapps.io/Bayesian-Stock-Management/
+when: 1591644028.38437
+asMultiple: FALSE
+asStatic: FALSE
