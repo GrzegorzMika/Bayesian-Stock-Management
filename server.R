@@ -65,7 +65,7 @@ server <- function(input, output, session) {
       "Please provide a non-negative integer"
     )
   )
-  
+
   observeEvent(
     input$mean,
     feedbackDanger(
@@ -74,7 +74,7 @@ server <- function(input, output, session) {
       "Please provide a non-negative integer"
     )
   )
-  
+
   observeEvent(
     input$var,
     feedbackDanger(
