@@ -101,11 +101,11 @@ server <- function(input, output, session) {
     alpha.post <- input$y + alpha
     beta.post <- input$n - input$y + beta
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
-    prob = rep(0, input$n_tilde)
-    for(i in 1:input$n_tilde){
-      prob[i] = 1 - sum(pred > i) / 10000
+    prob <- rep(0, input$n_tilde)
+    for (i in 1:input$n_tilde) {
+      prob[i] <- 1 - sum(pred > i) / 10000
     }
-    components <- min(which(prob >= input$conf/100))
+    components <- min(which(prob >= input$conf / 100))
     paste("Minimal required number of components is:", components)
   })
 
@@ -117,8 +117,9 @@ server <- function(input, output, session) {
     df <- read.csv(infile$datapath)
     df %>%
       filter(Group == input$group) %>%
+      filter(AgeGroup == input$agegroup) %>% 
       group_by(Group) %>%
-      mutate(Mean = Mean * Conf, Std = Std * Conf) %>% 
-      summarise(mean_prior = sum(Mean) / (20*sum(Conf)), var_prior = (sum(Std)/sum(Conf))^2)
+      mutate(Mean = Mean * Conf, Std = Std * Conf) %>%
+      summarise(mean_prior = sum(Mean) / (20 * sum(Conf)), var_prior = (sum(Std) / sum(Conf))^2)
   })
 }

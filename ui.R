@@ -10,6 +10,15 @@ groups <- c(
   "Group 5" = "group5"
 )
 
+agegroups <- c(
+  "< 1 year old" = "g1",
+  "1 - 5 years old" = "g2",
+  "5 - 10 years old" = "g3",
+  "10 - 15 years old" = "g4",
+  "15 - 20 years old" = "g5",
+  "> 20 years old" = "g6"
+)
+
 # Define UI for application that draws a histogram
 header <- dashboardHeader(
   title = "Bayesian Stock Management", titleWidth = 350, dropdownMenuOutput("notificationsMenu")
@@ -39,6 +48,16 @@ body <- dashboardBody(
           title = tags$p("Group of components", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
           width = 8, collapsed = FALSE, background = "light-blue",
           selectInput("group", label = tags$p("Select a group of componenets", style = "font-size: 32; font-family: Times New Roman"), choices = groups),
+          # actionButton(
+          #   inputId = "confirm",
+          #   label = "Next",
+          #   icon = icon("ok-circle")
+          # )
+        ),
+        box(
+          title = tags$p("Age category", style = "font-size: 42px; font-family: Times New Roman"), solidHeader = TRUE, collapsible = TRUE,
+          width = 8, collapsed = FALSE, background = "light-blue",
+          selectInput("agegroup", label = tags$p("Select an age category", style = "font-size: 32; font-family: Times New Roman"), choices = agegroups),
           actionButton(
             inputId = "confirm",
             label = "Next",
