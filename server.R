@@ -1,5 +1,6 @@
 library(shiny)
 library(shinydashboard)
+library(shinyFeedback)
 library(dplyr)
 library(purrr)
 library(ggplot2)
@@ -28,6 +29,61 @@ server <- function(input, output, session) {
     updateTabsetPanel(session, "sidebarmenu", "historical")
     updateTabsetPanel(session, "sidebarmenu", "dashboard")
   })
+
+  observeEvent(
+    input$n_tilde,
+    feedbackDanger(
+      "n_tilde",
+      input$n_tilde %% 1 != 0 | input$n_tilde < 0 | !is.numeric(input$n_tilde),
+      "Please provide a non-negative integer"
+    )
+  )
+
+  observeEvent(
+    input$n_stock,
+    feedbackDanger(
+      "n_stock",
+      input$n_stock %% 1 != 0 | input$n_stock < 0 | !is.numeric(input$n_stock),
+      "Please provide a non-negative integer"
+    )
+  )
+
+  observeEvent(
+    input$n,
+    feedbackDanger(
+      "n",
+      input$n %% 1 != 0 | input$n < 0 | !is.numeric(input$n),
+      "Please provide a non-negative integer"
+    )
+  )
+
+  observeEvent(
+    input$y,
+    feedbackDanger(
+      "y",
+      input$y %% 1 != 0 | input$y < 0 | !is.numeric(input$y),
+      "Please provide a non-negative integer"
+    )
+  )
+  
+  observeEvent(
+    input$mean,
+    feedbackDanger(
+      "mean",
+      input$mean %% 1 != 0 | input$mean < 0 | !is.numeric(input$mean),
+      "Please provide a non-negative integer"
+    )
+  )
+  
+  observeEvent(
+    input$var,
+    feedbackDanger(
+      "var",
+      input$var %% 1 != 0 | input$var < 0 | !is.numeric(input$var),
+      "Please provide a non-negative integer"
+    )
+  )
+
   output$notificationsMenu <- renderMenu({
     dropdownMenu(
       type = "notifications",
@@ -117,7 +173,7 @@ server <- function(input, output, session) {
     df <- read.csv(infile$datapath)
     df %>%
       filter(Group == input$group) %>%
-      filter(AgeGroup == input$agegroup) %>% 
+      filter(AgeGroup == input$agegroup) %>%
       group_by(Group) %>%
       mutate(Mean = Mean * Conf, Std = Std * Conf) %>%
       summarise(mean_prior = sum(Mean) / (20 * sum(Conf)), var_prior = (sum(Std) / sum(Conf))^2)

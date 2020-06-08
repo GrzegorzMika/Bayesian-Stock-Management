@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
+library(shinyFeedback)
 
 groups <- c(
   "Group 1" = "group1",
@@ -30,6 +31,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  useShinyFeedback(),
   setBackgroundColor(
     color = "LightSteelBlue",
     gradient = c("linear", "radial"),
