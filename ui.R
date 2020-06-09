@@ -31,6 +31,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  tags$img(src = 'logo.jpg', width = '100', height = '75', style= 'position:absolute; right:2px; bottom:2px;'),
   useShinyFeedback(),
   setBackgroundColor(
     color = "LightSteelBlue",
