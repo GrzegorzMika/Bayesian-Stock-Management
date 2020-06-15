@@ -96,7 +96,7 @@ server <- function(input, output, session) {
   })
   output$PosteriorPred <- renderPlot({
     if (is.null(filedata())) {
-      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2)
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2, n = input$n, y = input$y)
     } else {
       df <- filedata()
     }
@@ -106,10 +106,16 @@ server <- function(input, output, session) {
     var_prior <- df %>%
       select(var_prior) %>%
       flatten_dbl()
+    nb <- df %>%
+      select(n) %>%
+      flatten_dbl()
+    y <- df %>%
+      select(y) %>%
+      flatten_dbl()
     alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
     beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
-    alpha.post <- input$y + alpha
-    beta.post <- input$n - input$y + beta
+    alpha.post <- y + alpha
+    beta.post <- nb - y + beta
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
     tN <- table(pred) / 10000
     r <- data.frame(tN)
@@ -122,7 +128,7 @@ server <- function(input, output, session) {
 
   output$text1 <- renderText({
     if (is.null(filedata())) {
-      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2)
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2, n = input$n, y = input$y)
     } else {
       df <- filedata()
     }
@@ -132,17 +138,23 @@ server <- function(input, output, session) {
     var_prior <- df %>%
       select(var_prior) %>%
       flatten_dbl()
+    nb <- df %>%
+      select(n) %>%
+      flatten_dbl()
+    y <- df %>%
+      select(y) %>%
+      flatten_dbl()
     alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
     beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
-    alpha.post <- input$y + alpha
-    beta.post <- input$n - input$y + beta
+    alpha.post <- y + alpha
+    beta.post <- nb - y + beta
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
     paste("Probability of needing more than ", input$n_stock, "is:", round(sum(pred > input$n_stock) / 100, 2), "%")
   })
 
   output$required_componenets <- renderText({
     if (is.null(filedata())) {
-      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2)
+      df <- tibble(mean_prior = input$mean / 20, var_prior = (input$var / 20)^2, n = input$n, y = input$y)
     } else {
       df <- filedata()
     }
@@ -152,10 +164,16 @@ server <- function(input, output, session) {
     var_prior <- df %>%
       select(var_prior) %>%
       flatten_dbl()
+    nb <- df %>%
+      select(n) %>%
+      flatten_dbl()
+    y <- df %>%
+      select(y) %>%
+      flatten_dbl()
     alpha <- ((1 - mean_prior) * mean_prior^2 - mean_prior * var_prior) / var_prior
     beta <- (1 - mean_prior) * ((1 - mean_prior) * mean_prior - var_prior) / var_prior
-    alpha.post <- input$y + alpha
-    beta.post <- input$n - input$y + beta
+    alpha.post <- y + alpha
+    beta.post <- nb - y + beta
     pred <- rbinom(n = 10000, size = input$n_tilde, prob = rbeta(n = 10000, alpha.post, beta.post))
     prob <- rep(0, input$n_tilde)
     for (i in 1:input$n_tilde) {
@@ -176,6 +194,6 @@ server <- function(input, output, session) {
       filter(AgeGroup == input$agegroup) %>%
       group_by(Group) %>%
       mutate(Mean = Mean * Conf, Std = Std * Conf) %>%
-      summarise(mean_prior = sum(Mean) / (20 * sum(Conf)), var_prior = (sum(Std) / sum(Conf))^2)
+      summarise(mean_prior = sum(Mean) / (20 * sum(Conf)), var_prior = (sum(Std) / sum(Conf))^2, n = sum(nb_total), y = sum(nb_broken))
   })
 }

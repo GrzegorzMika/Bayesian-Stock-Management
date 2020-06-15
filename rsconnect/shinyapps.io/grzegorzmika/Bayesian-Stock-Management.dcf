@@ -5,9 +5,9 @@ account: grzegorzmika
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2427020
-bundleId: 3248837
+bundleId: 3273852
 url: https://grzegorzmika.shinyapps.io/Bayesian-Stock-Management/
-when: 1591734341.57552
+when: 1592253020.4478
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: CODE_OF_CONDUCT.md|LICENSE|README.md|survey.csv|.github/ISSUE_TEMPLATE/bug_report.md|.github/ISSUE_TEMPLATE/feature_request.md
+ignoredFiles: CODE_OF_CONDUCT.md|LICENSE|README.md|.github/ISSUE_TEMPLATE/bug_report.md|.github/ISSUE_TEMPLATE/feature_request.md
